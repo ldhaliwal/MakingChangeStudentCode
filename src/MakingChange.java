@@ -19,17 +19,22 @@ public class MakingChange {
         Arrays.sort(coins);
         long count = 0;
 
-        // need to be able to find and store the number of ways to make each COIN with the set of coins we have.
-        // then add that into recursive method somehow.
+        long[] coinCount = new long[coins.length];
+
+        for (int i = 0; i < coinCount.length; i++){
+            coinCount[i] = findCoinsCount(coins, coins[i], 0, 0);
+        }
+
+        //System.out.println(Arrays.toString(coinCount));
 
         for (int i = 0; i < coins.length; i++){
-            count += findCount(coins, target, i, coins[i]);
+            count += findCount(coins, coinCount, target, i, coins[i]);
         }
 
         return count;
     }
 
-    public static long findCount(int[] coins, int target, int currentCoinIndex, int total){
+    public static long findCount(int[] coins, long[] coinCount, int target, int currentCoinIndex, int total){
         if (total > target){
             return 0;
         }
@@ -37,12 +42,34 @@ public class MakingChange {
             return 1;
         }
 
-        int count = 0;
+        long count = 0;
+
         for (int i = currentCoinIndex; i < coins.length; i++){
-            count += findCount(coins, target, i, (total + coins[i]));
+            // I think this placement is wrong
+            if(coins[i] == (target - total)){
+                return coinCount[i];
+            }
+
+            count += findCount(coins, coinCount, target, i, (total + coins[i]));
         }
 
         return count;
     }
 
+    public static long findCoinsCount(int[] coins, int target, int currentCoinIndex, int total){
+        if (total > target){
+            return 0;
+        }
+        else if (total == target) {
+            return 1;
+        }
+
+        long count = 0;
+
+        for (int i = currentCoinIndex; i < coins.length; i++){
+            count += findCoinsCount(coins, target, i, (total + coins[i]));
+        }
+
+        return count;
+    }
 }
