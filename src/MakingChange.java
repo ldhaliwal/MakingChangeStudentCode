@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -19,22 +18,23 @@ public class MakingChange {
         Arrays.sort(coins);
         long count = 0;
 
-        long[] coinCount = new long[coins.length];
+        long[] currentCounts = new long[target + 1];
 
-        for (int i = 0; i < coinCount.length; i++){
-            coinCount[i] = findCoinsCount(coins, coins[i], 0, 0);
+        for (int i = 1; i < currentCounts.length; i++){
+            currentCounts[i] = findCurrentCounts(coins, i, 0, 0);
         }
 
-        //System.out.println(Arrays.toString(coinCount));
+        System.out.println(Arrays.toString(currentCounts));
 
-        for (int i = 0; i < coins.length; i++){
-            count += findCount(coins, coinCount, target, i, coins[i]);
-        }
-
-        return count;
+//        for (int i = 0; i < coins.length; i++){
+//            count += findCount(coins, currentCounts, target, i, coins[i]);
+//        }
+//
+//        return count;
+        return currentCounts[target];
     }
 
-    public static long findCount(int[] coins, long[] coinCount, int target, int currentCoinIndex, int total){
+    public static long findCount(int[] coins, long[] currentCounts, int target, int currentCoinIndex, int total){
         if (total > target){
             return 0;
         }
@@ -45,18 +45,18 @@ public class MakingChange {
         long count = 0;
 
         for (int i = currentCoinIndex; i < coins.length; i++){
-            // I think this placement is wrong
-            if(coins[i] == (target - total)){
-                return coinCount[i];
+            // Wrong spot
+            if(currentCounts[target - total] != 0){
+                return currentCounts[target - total];
             }
 
-            count += findCount(coins, coinCount, target, i, (total + coins[i]));
+            count += findCount(coins, currentCounts, target, i, (total + coins[i]));
         }
 
         return count;
     }
 
-    public static long findCoinsCount(int[] coins, int target, int currentCoinIndex, int total){
+    public static long findCurrentCounts(int[] coins, int target, int currentCoinIndex, int total){
         if (total > target){
             return 0;
         }
@@ -67,7 +67,7 @@ public class MakingChange {
         long count = 0;
 
         for (int i = currentCoinIndex; i < coins.length; i++){
-            count += findCoinsCount(coins, target, i, (total + coins[i]));
+            count += findCurrentCounts(coins, target, i, (total + coins[i]));
         }
 
         return count;
