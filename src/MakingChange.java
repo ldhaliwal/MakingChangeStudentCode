@@ -9,10 +9,6 @@ import java.util.Arrays;
  */
 
 public class MakingChange {
-    /**
-     * TODO: Complete this function, countWays(), to return the number of ways to make change
-     *  for any given total with any given set of coins.
-     */
     public static long countWays(int target, int[] coins) {
 
         Arrays.sort(coins);
@@ -21,17 +17,17 @@ public class MakingChange {
         long[] currentCounts = new long[target + 1];
 
         for (int i = 1; i < currentCounts.length; i++){
-            currentCounts[i] = findCurrentCounts(coins, i, 0, 0);
+            currentCounts[i] = findCount(coins, currentCounts, i, 0, 0);
         }
 
-        System.out.println(Arrays.toString(currentCounts));
+        //System.out.println(Arrays.toString(currentCounts));
 
-//        for (int i = 0; i < coins.length; i++){
-//            count += findCount(coins, currentCounts, target, i, coins[i]);
-//        }
-//
-//        return count;
-        return currentCounts[target];
+        for (int i = 0; i < coins.length; i++){
+            count += findCount(coins, currentCounts, target, i, coins[i]);
+        }
+
+        return count;
+//        return currentCounts[target];
     }
 
     public static long findCount(int[] coins, long[] currentCounts, int target, int currentCoinIndex, int total){
@@ -45,29 +41,12 @@ public class MakingChange {
         long count = 0;
 
         for (int i = currentCoinIndex; i < coins.length; i++){
-            // Wrong spot
-            if(currentCounts[target - total] != 0){
-                return currentCounts[target - total];
-            }
+            // Wrong spot ?
+//            if(currentCounts[target - total] != 0){
+//                return currentCounts[target - total];
+//            }
 
             count += findCount(coins, currentCounts, target, i, (total + coins[i]));
-        }
-
-        return count;
-    }
-
-    public static long findCurrentCounts(int[] coins, int target, int currentCoinIndex, int total){
-        if (total > target){
-            return 0;
-        }
-        else if (total == target) {
-            return 1;
-        }
-
-        long count = 0;
-
-        for (int i = currentCoinIndex; i < coins.length; i++){
-            count += findCurrentCounts(coins, target, i, (total + coins[i]));
         }
 
         return count;
