@@ -9,46 +9,27 @@ import java.util.Arrays;
  */
 
 public class MakingChange {
+    public static long[][] counts;
+
     public static long countWays(int target, int[] coins) {
 
         Arrays.sort(coins);
-        long count = 0;
+        counts = new long[coins.length][target + 1];
 
-        long[] currentCounts = new long[target + 1];
-
-        for (int i = 1; i < currentCounts.length; i++){
-            currentCounts[i] = findCount(coins, currentCounts, i, 0, 0);
-        }
-
-        //System.out.println(Arrays.toString(currentCounts));
-
-        for (int i = 0; i < coins.length; i++){
-            count += findCount(coins, currentCounts, target, i, coins[i]);
-        }
-
-        return count;
-//        return currentCounts[target];
+        return count(target, 0, coins);
     }
 
-    public static long findCount(int[] coins, long[] currentCounts, int target, int currentCoinIndex, int total){
-        if (total > target){
+    public static long count(int target, int index, int[] coins) {
+        if (target < 0 || index >= coins.length) {
             return 0;
-        }
-        else if (total == target) {
+        } else if (counts[index][target] != 0) {
+            return counts[index][target];
+        } else if (target == 0) {
             return 1;
         }
 
-        long count = 0;
+        counts[index][target] = count(target - coins[index], index, coins) + count(target, index + 1, coins);
 
-        for (int i = currentCoinIndex; i < coins.length; i++){
-            // Wrong spot ?
-//            if(currentCounts[target - total] != 0){
-//                return currentCounts[target - total];
-//            }
-
-            count += findCount(coins, currentCounts, target, i, (total + coins[i]));
-        }
-
-        return count;
+        return counts[index][target];
     }
 }
